@@ -16,11 +16,6 @@ def pause_app():
         app.stop()
 
 
-def hook_keyboard(*args):
-    from kivy.base import EventLoop
-    EventLoop.window.bind(on_keyboard=_hook_keyboard)
-
-
 def _hook_keyboard(window, key, *largs):
     app = App.get_running_app()
     if key == 27:
@@ -29,3 +24,9 @@ def _hook_keyboard(window, key, *largs):
         # indicating we consumed the event.
         app.go_back()
         return True
+
+
+def hook_keyboard(*args):
+    from kivy.base import EventLoop
+    EventLoop.window.bind(on_keyboard=_hook_keyboard)
+

@@ -45,7 +45,8 @@ class ConfirmButton(Button):
 
     def on_state(self, instance, value):
         if value == 'normal' and not self.is_sure:
-            Animation(background_color=(1, 0.2, 0.2, 1), d=0.2).start(self)
+            Animation(background_color=(1, 0.2, 0.2, 1),
+                      duration=0.2).start(self)
             Clock.schedule_once(self._restore, 5)
             self.is_sure = True
 
@@ -73,24 +74,28 @@ class ScreenMain(Screen):
     id: servername
     text: root.name
     font_size: sp(12)
-    on_long_press: Factory.ServerPopup(name=root.name, data=app.servers.get(root.name)).open()
+    on_long_press:
+      Factory.ServerPopup(name=root.name,
+                          data=app.servers.get(root.name)).open()
     on_release:
       not self.long_pressed and app.init_connection(root.name)
       self.long_pressed = False
+
   Button:
     text: 'Stop'
     font_size: sp(12)
     width: dp(50)
     size_hint_x: None
     on_release: app.close_connection(root.name)
+
   ConfirmButton:
     text: 'Delete'
     font_size: sp(12)
     width: dp(50)
     size_hint_x: None
     on_release:
-      self.is_sure and (app.close_connection(root.name), app.del_server(root))
-
+      self.is_sure and (app.close_connection(root.name), \
+        app.del_server(root))
 
 
 <ScreenMain>:
@@ -104,19 +109,22 @@ class ScreenMain(Screen):
 
       ActionView:
         ActionPrevious:
-          app_icon: 'icon.png'
+          app_icon: 'data/icon.png'
           title: 'irc1'
           on_release: app.go_back()
+
         ActionButton:
           text: 'Add server'
-          icon: 'plus-8x.png'
+          icon: 'data/plus-8x.png'
           on_release: Factory.ServerPopup().open()
+
         ActionOverflow:
           ActionButton:
             text: 'Disconnect all'
             on_release: app.disconnect_all()
 
     ServerScroll:
+      id: serverscroll
 
       GridLayout:
         id: servers
@@ -126,7 +134,6 @@ class ScreenMain(Screen):
         row_default_height: dp(45)
         height: self.minimum_height
         size_hint_y: None
-
 
 
 <LineInput@TextInput>:

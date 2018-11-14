@@ -1,8 +1,6 @@
-import asyncore
 import asynchat
 import re
 import socket
-from kivy.utils import escape_markup as escape
 
 import os, sys
 from os.path import abspath, dirname
@@ -11,6 +9,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, script_path)
 
 import bb
+
 
 class IRCHandler(asynchat.async_chat):
 
@@ -74,7 +73,9 @@ class IRCHandler(asynchat.async_chat):
         par, txt = (par.split(':', 1) + [''])[:2]
         par = par.rstrip()
 
-        txt = re.sub(r'(http|ftp|https)://?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)', bb.url('\g<0>'), escape(txt))
+        txt = re.sub(r'(http|ftp|https)://?[-a-zA-Z0-9@:%._+~#=]{2,256}'
+                      '\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)',
+                     bb.url('\g<0>'), txt)
         if cmd == 'PONG' or cmd == 'MODE':
             return
         if (cmd == '353' or cmd == '366') and not self.list_names:
@@ -170,23 +171,21 @@ class IRCHandler(asynchat.async_chat):
         if msg[0] != self.command_prefix:
             self.privmsg(self.channel, msg)
             return
-        if msg[1:5] == 'join':
+        if msg[1:5].lower() == 'join':
             cmd, channel = (msg.split(' ', 1) + [''])[:2]
             self.join(channel)
-        elif msg[1:5] == 'part':
+        elif msg[1:5].lower() == 'part':
             cmd, channel, txt = (msg.split(' ', 2) + ['', ''])[:3]
             self.part(channel, msg)
-        elif msg[1:4] == 'msg':
+        elif msg[1:4].lower() == 'msg':
             cmd, channel, txt = (msg.split(' ', 2) + ['', ''])[:3]
             if not channel:
                 self.add_unread(bb.mute('Missing #<channel> name'))
-                return
-            self.privmsg(channel, txt)
+            else:
+                self.privmsg(channel, txt)
             return
-        elif msg[1:6] == 'names':
-            self.list_names = True
-            self.send_srv(msg[1:])
         else:
+            self.list_names = msg[1:6].lower() == 'names'
             self.send_srv(msg[1:])
         self.add_unread(msg)
 

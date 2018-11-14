@@ -52,14 +52,17 @@ class ScreenConversation(Screen):
       pos_hint: {'top': 1}
 
       ActionView:
+
         ActionPrevious:
           title: root.name
-          app_icon: 'icon.png'
+          app_icon: 'data/icon.png'
           on_release: app.go_back()
+
         ActionButton:
           text: 'Disconnect'
-          icon: 'power-8x.png'
+          icon: 'data/power-8x.png'
           on_release: app.close_connection(root.name)
+
         ActionOverflow:
           ActionButton:
             text: 'Clear logs'
@@ -72,7 +75,8 @@ class ScreenConversation(Screen):
       height: dp(45)
       size_hint_y: None
       on_text:
-        app.change_channel(root.name, str(self.text) if self.text != 'No channel' else '')
+        app.change_channel(root.name, str(self.text) if \
+          self.text != 'No channel' else '')
 
     ChatScroll:
       id: chatscroll

@@ -38,8 +38,8 @@ class irc1App(App):
         osc.bind(oscid, self.main_api_callback, '/api/main')
         Clock.schedule_interval(lambda *x: osc.readQueue(oscid), 0.1)
 
-        self.icon = 'icon.png'
-	self.servers = DictStore('servers.db')
+        self.icon = 'data/icon.png'
+        self.servers = DictStore('servers.db')
         self.msg_animation = Animation(opacity=1, transition='out_cubic')
         self.screenmain = ScreenMain()
         self.running = {}
@@ -125,6 +125,7 @@ class irc1App(App):
         box = ServerBox(name=name)
         self.boxes[name] = box
         self.screenmain.ids.servers.add_widget(box)
+        self.screenmain.ids.serverscroll.scroll_to(box)
 
     def del_server(self, serverbox):
         name = serverbox.name
@@ -144,6 +145,9 @@ class irc1App(App):
             self.msg_animation.start(label)
         else:
             label.opacity = 1
+                    
+    def input_focus(self, name, dt):
+        self.running[name].ids.message.focus = True
 
     def send_msg(self, name, message):
         Clock.schedule_once(partial(self.input_focus, name), 0)
@@ -171,9 +175,6 @@ class irc1App(App):
             elif message[2] == 'unread':
                 for m in message[4:]:
                     self.log_msg(name, m)
-                    
-    def input_focus(self, name, dt):
-        self.running[name].ids.message.focus = True
 
     def on_start(self):
         Window.softinput_mode = 'below_target'
