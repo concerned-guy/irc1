@@ -17,7 +17,7 @@ Android IRC client using python-for-android
 - Use a **slash** (/) to send special commands
 - Long press on server to edit
 - Use "Stop" button to stop receiving messages
-- Tap on "Delete" button **twice** to remove server
+- Tap "Delete" button **twice** to remove server
 
 ## Features
 
