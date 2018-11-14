@@ -19,6 +19,18 @@ Android IRC client using python-for-android
 - Use "Stop" button to stop receiving messages
 - Tap on "Delete" button **twice** to remove server
 
+## Features
+
+- Automatic authentication and joining channels
+- Active on multiple servers/channels at the same time
+- Receive messages when app in background or screen turned off
+- Color coded message components and clickable URLs
+- Connect/disconnect with only one touch
+
+![Main screen](screen1.png)
+![Welcome from server](screen2.png)
+![Join channel and chat](screen3.png)
+
 ## Authors
 
 USTH ICT BI7 students
