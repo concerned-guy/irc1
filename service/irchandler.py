@@ -1,6 +1,5 @@
 import asyncore
 import asynchat
-import getpass
 import re
 import socket
 from kivy.utils import escape_markup as escape
