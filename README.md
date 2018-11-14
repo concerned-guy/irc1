@@ -27,9 +27,7 @@ Android IRC client using python-for-android
 - Color coded message components and clickable URLs
 - Connect/disconnect with only one touch
 
-![Main screen](screen1.png)
-![Welcome from server](screen2.png)
-![Join channel and chat](screen3.png)
+![Main screen](screen1.png) ![Welcome from server](screen2.png) ![Join channel and chat](screen3.png)
 
 ## Authors
 
