@@ -1,0 +1,6 @@
+.gitignore
+README.md
+apk/irc1-0.1-debug.apk
+apk/blacklist.txt
+apk/build.sh
+shot/*

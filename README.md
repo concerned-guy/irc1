@@ -27,7 +27,7 @@ Android IRC client using python-for-android
 - Color coded message components and clickable URLs
 - One touch connect/disconnect
 
-<img src="data/screen1.png" width="200"> <img src="data/screen2.png" width="200"> <img src="data/screen3.png" width="200">
+<img src="shot/screen1.png" width="200"> <img src="shot/screen2.png" width="200"> <img src="shot/screen3.png" width="200">
 
 ## Authors
 

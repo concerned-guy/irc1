@@ -30,6 +30,7 @@ class ScreenConversation(Screen):
   color: (0.1, 0.1, 0.1, 1)
   opacity: 0.2
   font_size: sp(12)
+  line_height: 1.2
   text_size: (self.width, None)
   height: self.texture_size[1]
   size_hint_y: None
@@ -85,7 +86,6 @@ class ScreenConversation(Screen):
       GridLayout:
         id: chatlog
         cols: 1
-        spacing: dp(2)
         padding: dp(5)
         height: self.minimum_height
         size_hint_y: None

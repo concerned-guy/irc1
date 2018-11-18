@@ -95,7 +95,7 @@ class irc1App(App):
         del self.running[name]
 
     def disconnect_all(self):
-        for name in sorted(dict(self.servers.find()).keys()):
+        for name, data in self.servers.find():
             self.close_connection(name)
 
     def update_or_add_server(self, popup, name=''):
@@ -159,22 +159,23 @@ class irc1App(App):
                     port=serviceport)
 
     def main_api_callback(self, message, *args):
-        print message[2:]
+#        print message[2:]
         if len(message) > 3:
             name = message[3]
             if name not in self.running:
                 return
             if message[2] == 'nick':
-                self.running[name].ids.nick.text = message[4]
+                nick = message[4]
+                self.running[name].ids.nick.text = nick
             elif message[2] == 'channel':
-                self.running[name].ids.channel.text = message[4] or 'No channel'
+                channel, channels = message[4], message[5:]
+                self.running[name].ids.channel.text = channel or 'No channel'
                 self.running[name].ids.channel.values = [x or 'No channel'
-                                                         for x in message[5:]]
+                                                         for x in channels]
             elif message[2] == 'check':
                 osc.sendMsg('/api/main', ['unread', name], port=serviceport)
-            elif message[2] == 'unread':
-                for m in message[4:]:
-                    self.log_msg(name, m)
+            elif message[2] == 'unread':   
+                self.log_msg(name, message[4])
 
     def on_start(self):
         Window.softinput_mode = 'below_target'

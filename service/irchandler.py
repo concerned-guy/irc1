@@ -1,6 +1,7 @@
 import asynchat
 import re
 import socket
+from kivy.utils import escape_markup as escape
 
 import os, sys
 from os.path import abspath, dirname
@@ -9,6 +10,8 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, script_path)
 
 import bb
+
+UNREAD_SIZE = 10000
 
 
 class IRCHandler(asynchat.async_chat):
@@ -21,7 +24,7 @@ class IRCHandler(asynchat.async_chat):
         self.host = host
         self.port = port
         self.nick = nick
-        self.user = 'androiduser'
+        self.user = 'phone'
         self.autojoin = autojoin
         self.password = password
         self.auth_nickserv = auth_nickserv
@@ -29,14 +32,15 @@ class IRCHandler(asynchat.async_chat):
         self.channel = ''
         self.channels = ['']
         self.command_prefix = '/'
-        self.list_names = False
-        self.part_msg = 'Leaving to study for final exam.'
         self.set_terminator('\r\n')
         self.inbuf = ''
-        self.outbufs = []
-        self.unread = []
-        self.old_channel = self.channel
+        self.outbuf = ''
+        self.unread = ''
+        self.list_names = False
+        self.part_msg = 'Leaving to study for final exam.'
         self.old_nick = self.nick
+        self.old_channel = self.channel
+        self.old_channels = self.channels[:]
         if self.password and not self.auth_nickserv:
             self.send_srv('PASS %s' % password)
         self.send_srv('NICK %s' % self.nick)
@@ -48,17 +52,17 @@ class IRCHandler(asynchat.async_chat):
 
     def found_terminator(self):
         msg, self.inbuf = self.inbuf, ''
-        self.parse_srv(msg.encode('ascii', 'ignore'))
+        self.parse_srv(str(unicode(msg, 'ascii', 'ignore')))
 
     def writable(self):
-        return len(self.outbufs) > 0
+        return True if self.outbuf else False
 
     def handle_write(self):
-        msg = self.outbufs.pop(0) + '\n'
+        msg, self.outbuf = self.outbuf, ''
         self.push(msg)
 
     def send_srv(self, data):
-        self.outbufs.append(data)
+        self.outbuf += data + '\n'
 
     def parse_srv(self, msg):
         usr, cmd = self.host, msg
@@ -73,9 +77,9 @@ class IRCHandler(asynchat.async_chat):
         par, txt = (par.split(':', 1) + [''])[:2]
         par = par.rstrip()
 
-        txt = re.sub(r'(http|ftp|https)://?[-a-zA-Z0-9@:%._+~#=]{2,256}'
-                      '\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)',
-                     bb.url('\g<0>'), txt)
+        txt = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*,~]|'
+                     '(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                     bb.url('\g<0>'), escape(txt))
         if cmd == 'PONG' or cmd == 'MODE':
             return
         if (cmd == '353' or cmd == '366') and not self.list_names:
@@ -150,18 +154,18 @@ class IRCHandler(asynchat.async_chat):
                 self.privmsg('NickServ', 'IDENTIFY %s' % self.password)
             if self.script:
                 self.send_srv(self.script)
-            for j in self.autojoin:
-                self.join(j)
+            for channel in self.autojoin:
+                self.join(channel)
 
     def add_unread(self, msg):
-        self.unread.append(msg)
-        if len(self.unread) > 1024:
-            self.unread = self.unread[-1024:]
-        print msg
+        self.unread += msg if not self.unread else ('\n' + msg)
+        if len(self.unread) > UNREAD_SIZE:
+            self.unread = self.unread[-UNREAD_SIZE:]
+#        print msg
 
     def pop_unread(self):
-        unread, self.unread = self.unread, []
-        return unread
+        msg, self.unread = self.unread, ''
+        return msg
 
     def parse_in(self, msg):
         msg = msg.strip()

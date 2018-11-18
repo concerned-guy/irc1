@@ -70,18 +70,18 @@ def monitor_changes():
             osc.sendMsg("/api/main", ["nick", name, irc.nick],
                         port = activityport)
             irc.old_nick = irc.nick
-        if irc.old_channel != irc.channel:
+        if irc.old_channel != irc.channel or irc.old_channels != irc.channels:
             osc.sendMsg("/api/main",
                         ["channel", name, irc.channel] + irc.channels,
                         port=activityport)
             irc.old_channel = irc.channel
-        if len(irc.unread) > 0 and opened[name]:
+            irc.old_channels = irc.channels[:]
+        if irc.unread and opened[name]:
             osc.sendMsg("/api/main", ["check", name], port=activityport)
-
             opened[name] = False
 
 def main_api_callback(message, *args):
-    print message[2:]
+#    print message[2:]
     if len(message) > 3:
         name = message[3]
         if message[2] == "connect":
@@ -90,9 +90,8 @@ def main_api_callback(message, *args):
             disconnect_server(name)
         elif message[2] == "unread":
             unread = unread_server(name)
-            if len(unread) > 0:
-                osc.sendMsg("/api/main", ["unread", name] + unread,
-                            port=activityport)
+            osc.sendMsg("/api/main", ["unread", name, unread],
+                        port=activityport)
             opened[name] = True
         elif message[2] == "send":
             send_server(name, message[4])
