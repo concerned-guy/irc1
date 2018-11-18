@@ -145,7 +145,7 @@ class irc1App(App):
             self.msg_animation.start(label)
         else:
             label.opacity = 1
-                    
+
     def input_focus(self, name, dt):
         self.running[name].ids.message.focus = True
 

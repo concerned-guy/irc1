@@ -42,17 +42,17 @@ class IRCHandler(asynchat.async_chat):
         self.send_srv('NICK %s' % self.nick)
         self.send_srv('USER %s %s %s :%s' % (self.user, 'localhost',
                                              self.host, self.user))
-        
+
     def collect_incoming_data(self, data):
         self.inbuf += data
-        
+
     def found_terminator(self):
         msg, self.inbuf = self.inbuf, ''
         self.parse_srv(msg.encode('ascii', 'ignore'))
 
     def writable(self):
         return len(self.outbufs) > 0
-        
+
     def handle_write(self):
         msg = self.outbufs.pop(0) + '\n'
         self.push(msg)
@@ -158,7 +158,7 @@ class IRCHandler(asynchat.async_chat):
         if len(self.unread) > 1024:
             self.unread = self.unread[-1024:]
         print msg
-        
+
     def pop_unread(self):
         unread, self.unread = self.unread, []
         return unread

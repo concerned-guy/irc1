@@ -36,7 +36,8 @@ class ScreenConversation(Screen):
   markup: True
   on_ref_press: webbrowser.open(args[1])
 
-<ScreenConversation@Screen>:
+
+<ScreenConversation>:
   name: 'ScreenConversation'
 
   BoxLayout:
@@ -75,8 +76,8 @@ class ScreenConversation(Screen):
       height: dp(45)
       size_hint_y: None
       on_text:
-        app.change_channel(root.name, str(self.text) if \
-          self.text != 'No channel' else '')
+        app.change_channel(root.name, \
+                           str(self.text) if self.text != 'No channel' else '')
 
     ChatScroll:
       id: chatscroll

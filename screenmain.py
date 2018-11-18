@@ -10,8 +10,8 @@ from kivy.lang import Builder
 
 class ServerPopup(Popup):
     name = StringProperty('')
-    data = DictProperty({'host': '', 'port': 6667, 'nick': 'jrandom', \
-                         'password': '', 'auth_nickserv': False, \
+    data = DictProperty({'host': '', 'port': 6667, 'nick': 'jrandom',
+                         'password': '', 'auth_nickserv': False,
                          'scripts': '', 'autojoin': []})
 
 
@@ -24,7 +24,7 @@ class NameButton(Button):
 
     long_press_delay = NumericProperty(2)
     long_pressed = BooleanProperty(False)
-    
+
     def on_state(self, instance, value):
         if value == 'down':
             self._clockev = Clock.schedule_once(self._do_long_press,
@@ -75,7 +75,7 @@ class ScreenMain(Screen):
     text: root.name
     font_size: sp(12)
     on_long_press:
-      Factory.ServerPopup(name=root.name,
+      Factory.ServerPopup(name=root.name, \
                           data=app.servers.get(root.name)).open()
     on_release:
       not self.long_pressed and app.init_connection(root.name)
@@ -95,7 +95,7 @@ class ScreenMain(Screen):
     size_hint_x: None
     on_release:
       self.is_sure and (app.close_connection(root.name), \
-        app.del_server(root))
+                        app.del_server(root))
 
 
 <ScreenMain>:
@@ -145,7 +145,7 @@ class ScreenMain(Screen):
 
   BoxLayout:
     orientation: 'vertical'
-  
+
     GridLayout:
       cols: 2
       padding: dp(5)
