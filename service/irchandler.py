@@ -158,7 +158,7 @@ class IRCHandler(asynchat.async_chat):
                 self.join(channel)
 
     def add_unread(self, msg):
-        self.unread += msg if not self.unread else ('\n' + msg)
+        self.unread += ('\n' + msg) if self.unread else msg
         if len(self.unread) > UNREAD_SIZE:
             self.unread = self.unread[-UNREAD_SIZE:]
 #        print msg
